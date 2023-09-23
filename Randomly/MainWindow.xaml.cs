@@ -20,9 +20,79 @@ namespace Randomly
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Random randomSeed = new Random();
+
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(tbStartNum.Text, out int minValue) &&
+                int.TryParse(tbEndNum.Text, out int maxValue) &&
+                int.TryParse(tbNum.Text, out int quantity))
+            {
+                List<int> randomNumbers = new List<int>();
+                while (randomNumbers.Count < quantity)
+                {
+                    int randomNumber = getRandom(minValue, maxValue);
+                    if(cbAntiRepeat.IsChecked == true)
+                    {
+                        if (quantity < maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
+                        {
+                            randomNumbers.Add(randomNumber);
+                        }else if(quantity > maxValue - minValue + 1)
+                        {
+                            //取得值比能取到不重复的值大，显示错误
+                            ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
+                            errorPage.Show();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        randomNumbers.Add(randomNumber);
+                    }
+                    
+                }
+
+                lbRandomList.ItemsSource = randomNumbers;
+            }
+            else
+            {
+                // 输入的值无效，显示错误
+                ErrorPage errorPage = new ErrorPage("好像出了点问题。。。一定不是Randomly的问题，一定不是!");
+                errorPage.Show();
+            }
+
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnAbout_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        
+        private int getRandom(int minValue, int maxValue) 
+        {
+            if(minValue <= maxValue)
+            {
+                int randomNumber = randomSeed.Next(minValue, maxValue);
+
+                return randomNumber;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
+
     }
 }

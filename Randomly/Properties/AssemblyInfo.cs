@@ -7,12 +7,12 @@ using System.Windows;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("Randomly")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Randomly")]
-[assembly: AssemblyCopyright("Copyright ©  2023")]
+[assembly: AssemblyTitle("Randomly!")]
+[assembly: AssemblyDescription("快速方便的随机抽号软件!")]
+[assembly: AssemblyConfiguration("Release")]
+[assembly: AssemblyCompany("Aunt Studio")]
+[assembly: AssemblyProduct("Randomly!")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
