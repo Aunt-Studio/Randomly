@@ -1,0 +1,19 @@
+﻿<Window x:Class="Randomly.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Randomly"
+        mc:Ignorable="d"
+        Title="About" Height="333" Width="599" Foreground="White" FontFamily="Source Han Sans SC Medium" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush ImageSource="/src/Randomly_bg.png"/>
+    </Window.Background>
+    <Grid>
+        <Image HorizontalAlignment="Center" Height="46" Margin="0,10,0,0" VerticalAlignment="Top" Width="234" Source="/Randomly!.png" Stretch="UniformToFill"/>
+        <Image HorizontalAlignment="Center" Height="21" Margin="0,65,0,0" VerticalAlignment="Top" Width="340" Source="/易于操作、方便、快速的随机抽号软件.png"/>
+        <TextBox HorizontalAlignment="Center" Height="125" Margin="0,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Background="#FF3C3C3C" BorderBrush="#FF969AA4" SelectionBrush="#FF757474" SelectionTextBrush="#FFDEDEDE" Foreground="White" Opacity="0.92" Text="本软件源代码以及可执行程序均遵循GNU Affero General Public License v3.0协议。&#xD;&#xA;安装、使用、修改、发行均代表您已阅读并同意此协议。&#xD;&#xA;有关本软件开源许可证的更多信息，请参阅: https://github.com/yangnuozhen/Randomly/blob/master/LICENSE.txt&#xD;&#xA;&#xD;&#xA;Developed by Aunt_nuozhen @ Aunt Studio with ❤&#xD;&#xA;" TextAlignment="Center" IsReadOnly="True"/>
+
+
+    </Grid>
+</Window>

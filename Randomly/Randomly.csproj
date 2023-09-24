@@ -71,15 +71,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ErrorPage.xaml.cs" >
+    <Compile Include="ErrorPage.xaml.cs">
       <DependentUpon>ErrorPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -135,6 +142,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="src\failed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="src\Randomly_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Randomly!.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="易于操作、方便、快速的随机抽号软件.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
