@@ -22,7 +22,7 @@ namespace Randomly
     {
         private Random randomSeed = new Random();
         List<int> randomNumbers = new List<int>();
-
+        private bool isAscending = true;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace Randomly
                     int randomNumber = getRandom(minValue, maxValue);
                     if(cbAntiRepeat.IsChecked == true)
                     {
-                        if (quantity < maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
+                        if (quantity <= maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
                         {
                             randomNumbers.Add(randomNumber);
                         }else if(quantity > maxValue - minValue + 1)
@@ -83,14 +83,15 @@ namespace Randomly
 
         private void btnAbout_Click(object sender, RoutedEventArgs e)
         {
-
+            About aboutPage = new About();
+            aboutPage.Show();
         }
         
         private int getRandom(int minValue, int maxValue) 
         {
             if(minValue <= maxValue)
             {
-                int randomNumber = randomSeed.Next(minValue, maxValue);
+                int randomNumber = randomSeed.Next(minValue, maxValue + 1);
 
                 return randomNumber;
             }
@@ -112,5 +113,23 @@ namespace Randomly
             }
         }
 
+        private void btnSort_Click(object sender, RoutedEventArgs e)
+        {
+            if (isAscending)
+            {
+                randomNumbers.Sort((a, b) => a.CompareTo(b)); // 从小到大排序
+                btnSort.Content = "从大到小排序";
+            }
+            else
+            {
+                randomNumbers.Sort((a, b) => b.CompareTo(a)); // 从大到小排序
+                btnSort.Content = "从小到大排序";
+            }
+
+            isAscending = !isAscending;
+            
+            lbRandomList.ItemsSource = null; //刷新显示
+            lbRandomList.ItemsSource = randomNumbers;
+        }
     }
 }
