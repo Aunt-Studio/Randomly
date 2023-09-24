@@ -21,6 +21,7 @@ namespace Randomly
     public partial class MainWindow : Window
     {
         private Random randomSeed = new Random();
+        List<int> randomNumbers = new List<int>();
 
         public MainWindow()
         {
@@ -29,11 +30,12 @@ namespace Randomly
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            randomNumbers.Clear();
             if (int.TryParse(tbStartNum.Text, out int minValue) &&
                 int.TryParse(tbEndNum.Text, out int maxValue) &&
                 int.TryParse(tbNum.Text, out int quantity))
             {
-                List<int> randomNumbers = new List<int>();
+                
                 while (randomNumbers.Count < quantity)
                 {
                     int randomNumber = getRandom(minValue, maxValue);
@@ -56,7 +58,7 @@ namespace Randomly
                     }
                     
                 }
-
+                lbRandomList.ItemsSource = null; //刷新显示
                 lbRandomList.ItemsSource = randomNumbers;
             }
             else
@@ -70,7 +72,13 @@ namespace Randomly
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-
+            if (lbRandomList.SelectedItem != null)
+            {
+                int selectedValue = (int)lbRandomList.SelectedItem;
+                randomNumbers.Remove(selectedValue);
+                lbRandomList.ItemsSource = null; //刷新显示
+                lbRandomList.ItemsSource = randomNumbers;
+            }
         }
 
         private void btnAbout_Click(object sender, RoutedEventArgs e)
@@ -92,7 +100,17 @@ namespace Randomly
             }
         }
 
-
+        private void lbRandomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbRandomList.SelectedItem != null)
+            {
+                btnDelete.IsEnabled = true;
+            }
+            else
+            {
+                btnDelete.IsEnabled = false;
+            }
+        }
 
     }
 }
