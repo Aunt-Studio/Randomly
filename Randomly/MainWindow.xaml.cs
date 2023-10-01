@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -35,31 +36,48 @@ namespace Randomly
                 int.TryParse(tbEndNum.Text, out int maxValue) &&
                 int.TryParse(tbNum.Text, out int quantity))
             {
-                
-                while (randomNumbers.Count < quantity)
+                if (minValue <= maxValue)
                 {
-                    int randomNumber = getRandom(minValue, maxValue);
-                    if(cbAntiRepeat.IsChecked == true)
+                    while (randomNumbers.Count < quantity)
                     {
-                        if (quantity <= maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
+                        int randomNumber = getRandom(minValue, maxValue);
+                        if (cbAntiRepeat.IsChecked == true)
+                        {
+                            if (quantity <= maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
+                            {
+                                randomNumbers.Add(randomNumber);
+                            }
+                            else if (quantity > maxValue - minValue + 1)
+                            {
+                                //取得值比能取到不重复的值大，显示错误
+                                ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
+                                errorPage.Show();
+                                break;
+                            }
+                        }
+                        else
                         {
                             randomNumbers.Add(randomNumber);
-                        }else if(quantity > maxValue - minValue + 1)
-                        {
-                            //取得值比能取到不重复的值大，显示错误
-                            ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
-                            errorPage.Show();
-                            break;
                         }
+
                     }
-                    else
-                    {
-                        randomNumbers.Add(randomNumber);
-                    }
-                    
+                    lbRandomList.ItemsSource = null; //刷新显示
+                    lbRandomList.ItemsSource = randomNumbers;
+                    Storyboard storyboard = Resources["addItem"] as Storyboard;
+
+                    storyboard.SetValue(Storyboard.TargetNameProperty, "MainWindow");
+
+                    // 开始动画
+                    storyboard.Begin();
                 }
-                lbRandomList.ItemsSource = null; //刷新显示
-                lbRandomList.ItemsSource = randomNumbers;
+                else
+                {
+                    // 输入的值无效，显示错误
+                    ErrorPage errorPage = new ErrorPage("为什么最小值比最大值还大啊喂 (#`O′)");
+                    errorPage.Show();
+                }
+                
+
             }
             else
             {
@@ -131,5 +149,6 @@ namespace Randomly
             lbRandomList.ItemsSource = null; //刷新显示
             lbRandomList.ItemsSource = randomNumbers;
         }
+
     }
 }

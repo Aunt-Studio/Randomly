@@ -6,7 +6,29 @@
         xmlns:local="clr-namespace:Randomly"
         mc:Ignorable="d"
         Title="Randomly!" Height="553" Width="450" Background="#FF0D1117" FontFamily="Source Han Sans SC Medium" Foreground="#FFF7F7F7" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+    <Window.Resources>
+        <Storyboard x:Key="addItem">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetName="lbRandomList" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)">
+                <EasingColorKeyFrame KeyTime="00:00:00" Value="#FF121D2F">
+                    <EasingColorKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingColorKeyFrame.EasingFunction>
+                </EasingColorKeyFrame>
+                <EasingColorKeyFrame KeyTime="00:00:00.2000000" Value="#FF56709A">
+                    <EasingColorKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingColorKeyFrame.EasingFunction>
+                </EasingColorKeyFrame>
+                <EasingColorKeyFrame KeyTime="00:00:00.3400000" Value="#FF121D2F">
+                    <EasingColorKeyFrame.EasingFunction>
+                        <PowerEase EasingMode="EaseInOut"/>
+                    </EasingColorKeyFrame.EasingFunction>
+                </EasingColorKeyFrame>
+            </ColorAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
     <Grid InputScope="Number">
+
         <TextBlock HorizontalAlignment="Left" Height="27" Margin="24,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="52" FontSize="16" TextAlignment="Center"><Run Language="zh-cn" Text="起始数"/></TextBlock>
         <TextBox x:Name="tbStartNum" HorizontalAlignment="Left" Height="27" Margin="81,92,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="74" SelectionBrush="#FF969696" Background="#FF0D1117" Foreground="White" SelectionTextBrush="#FFE0E0E0" TextAlignment="Center" InputScope="Number"/>
         <TextBlock HorizontalAlignment="Left" Height="27" Margin="24,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="52" FontSize="16" TextAlignment="Center"><Run Language="zh-cn" Text="终点数"/></TextBlock>
@@ -15,11 +37,12 @@
         <TextBlock HorizontalAlignment="Left" Height="27" Margin="24,257,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="52" FontSize="16" Text="个数" TextAlignment="Center"/>
         <TextBox x:Name="tbNum" HorizontalAlignment="Left" Height="27" Margin="81,257,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="74" SelectionBrush="#FF969696" Background="#FF0D1117" Foreground="White" SelectionTextBrush="#FFE0E0E0" TextAlignment="Center"/>
         <Button x:Name="btnStart" Content="  启动！" HorizontalAlignment="Left" Height="65" Margin="24,323,0,0" VerticalAlignment="Top" Width="131" Click="btnStart_Click"/>
-        <ListBox x:Name="lbRandomList" Margin="174,24,10,46" Background="#FF121D2F" Foreground="White" FontWeight="Bold" FontSize="18" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="lbRandomList_SelectionChanged"/>
+        <ListBox x:Name="lbRandomList" Margin="174,24,10,46" Background="#FF121D2F" Foreground="White" FontWeight="Bold" FontSize="18" SelectionChanged="lbRandomList_SelectionChanged" Grid.ColumnSpan="2" d:ItemsSource="{d:SampleData ItemCount=5}"/>
         <Button x:Name="btnDelete" Content="删除该项" HorizontalAlignment="Left" Height="28" Margin="96,464,0,0" VerticalAlignment="Top" Width="59" IsEnabled="False" Click="btnDelete_Click"/>
         <Button x:Name="btnAbout" Content="关于" HorizontalAlignment="Left" Height="28" Margin="24,464,0,0" VerticalAlignment="Top" Width="60" Click="btnAbout_Click"/>
         <CheckBox x:Name="cbAntiRepeat" Content="避免重复" HorizontalAlignment="Left" Height="18" VerticalAlignment="Top" Width="70" Margin="24,402,0,0" Foreground="White" IsChecked="True"/>
         <Button x:Name="btnSort" Content="从小到大排序" HorizontalAlignment="Left" Height="29" Margin="24,425,0,0" VerticalAlignment="Top" Width="131" Click="btnSort_Click"/>
+        <Image Margin="46,10,311,451" Source="/icon_yellow.png" RenderTransformOrigin="0.516,0.531"/>
 
 
 
