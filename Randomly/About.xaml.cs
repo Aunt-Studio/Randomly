@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,10 +25,12 @@ namespace Randomly
         public About()
         {
             InitializeComponent();
+
         }
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
+            versionText.Text = "当前版本 | " + getVersion();
             Storyboard storyboard = Resources["backgroundOpacity"] as Storyboard;
 
             storyboard.SetValue(Storyboard.TargetNameProperty, "About");
@@ -45,6 +48,14 @@ namespace Randomly
                 FileName = openSourceUrl,
                 UseShellExecute = true
             });
+        }
+        public string getVersion()
+        {
+            // 获取程序集版本号
+            Assembly assembly = Assembly.GetEntryAssembly();
+            Version version = assembly.GetName().Version;
+            string versionString = version.ToString();
+            return versionString;
         }
     }
 }
