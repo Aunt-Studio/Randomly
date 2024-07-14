@@ -41,7 +41,7 @@ namespace Randomly
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string openSourceUrl = "https://github.com/yangnuozhen/Randomly";
+            string openSourceUrl = "https://github.com/Aunt-Studio/Randomly";
 
             Process.Start(new ProcessStartInfo
             {
