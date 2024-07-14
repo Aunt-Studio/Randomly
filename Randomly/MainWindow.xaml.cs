@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,69 +23,129 @@ namespace Randomly
     public partial class MainWindow : Window
     {
         private Random randomSeed = new Random();
-        List<int> randomNumbers = new List<int>();
+        ObservableCollection<int> randomNumbers = new ObservableCollection<int>();
         private bool isAscending = true;
         public MainWindow()
         {
             InitializeComponent();
         }
-
-        private void btnStart_Click(object sender, RoutedEventArgs e)
+        private async Task GetAndSetRandomListAsync(int minValue, int maxValue, int quantity, bool noRepeat)
         {
-            randomNumbers.Clear();
-            if (int.TryParse(tbStartNum.Text, out int minValue) &&
-                int.TryParse(tbEndNum.Text, out int maxValue) &&
-                int.TryParse(tbNum.Text, out int quantity))
+            int randomNumber;
+            if (noRepeat == true)
             {
-                if (minValue <= maxValue)
+                do
                 {
-                    while (randomNumbers.Count < quantity)
-                    {
-                        int randomNumber = getRandom(minValue, maxValue);
-                        if (cbAntiRepeat.IsChecked == true)
-                        {
-                            if (quantity <= maxValue - minValue + 1 && !randomNumbers.Contains(randomNumber))
-                            {
-                                randomNumbers.Add(randomNumber);
-                            }
-                            else if (quantity > maxValue - minValue + 1)
-                            {
-                                //取得值比能取到不重复的值大，显示错误
-                                ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
-                                errorPage.Show();
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            randomNumbers.Add(randomNumber);
-                        }
+                    randomNumber = getRandom(minValue, maxValue);
+                } while (randomNumbers.Contains(randomNumber));
+            }
+            else
+            {
+                randomNumber = getRandom(minValue, maxValue);
+            }
+            //确保在主线程上进行集合修改
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+               {
+                   randomNumbers.Add(randomNumber);
+                   pbProgress.Value = ((double)randomNumbers.Count / (double)quantity) * 100;
+               });
 
-                    }
-                    lbRandomList.ItemsSource = null; //刷新显示
-                    lbRandomList.ItemsSource = randomNumbers;
+            if (randomNumbers.Count == quantity) {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
                     Storyboard storyboard = Resources["addItem"] as Storyboard;
 
                     storyboard.SetValue(Storyboard.TargetNameProperty, "MainWindow");
 
                     // 开始动画
+                    
                     storyboard.Begin();
+                    pbProgress.Value = 100;
+                    btnStart.IsEnabled = true;
+                    RandomlyIcon.IsEnabled = true;
+                });
+
+            }
+        }
+        private async Task GenerateRandomNumbersAsync(int minValue, int maxValue, int quantity, bool noRepeat)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                if (quantity > 500)
+                {
+                    pbProgress.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    pbProgress.Visibility = Visibility.Hidden;
+                }
+            });
+            await Task.Run(async () =>
+            {
+                for (int i = 0; i < quantity; i++)
+                {
+                    await GetAndSetRandomListAsync(minValue, maxValue, quantity,noRepeat);
+                }
+            });
+        }
+        private async void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            
+            randomNumbers.Clear();
+            lbRandomList.ItemsSource = null;
+            lbRandomList.ItemsSource = randomNumbers;
+            btnStart.IsEnabled = false;
+            RandomlyIcon.IsEnabled = false;
+            if (int.TryParse(tbStartNum.Text, out int minValue) &&
+                int.TryParse(tbEndNum.Text, out int maxValue) &&
+                int.TryParse(tbNum.Text, out int quantity))
+            {
+                if (minValue < maxValue)
+                {
+                    if (quantity > maxValue - minValue + 1)
+                    {
+                        if ((bool)cbAntiRepeat.IsChecked)
+                        {
+
+                            ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
+                            errorPage.Show();
+                            btnStart.IsEnabled = true;
+                            RandomlyIcon.IsEnabled = true;
+                        }
+                        else
+                        {
+                            // 特殊情况: 取数数量超过可取数量，只允许重复
+                            await GenerateRandomNumbersAsync(minValue, maxValue, quantity,false);
+                        }
+                    }
+                    else
+                    {
+                        // 通常情况: 允许重复 + 不允许重复
+                        await GenerateRandomNumbersAsync(minValue, maxValue, quantity,(bool)cbAntiRepeat.IsChecked);
+                    }
+
                 }
                 else
                 {
                     // 输入的值无效，显示错误
                     ErrorPage errorPage = new ErrorPage("为什么最小值比最大值还大啊喂 (#`O′)");
                     errorPage.Show();
+                    btnStart.IsEnabled = true;
+                    RandomlyIcon.IsEnabled = true;
                 }
-                
+
 
             }
             else
             {
                 // 输入的值无效，显示错误
-                ErrorPage errorPage = new ErrorPage("好像出了点问题。。。一定不是Randomly的问题，一定不是!");
+                ErrorPage errorPage = new ErrorPage("好像出了点问题。。。一定不是Randomly的问题，一定不是!\n 无法将输入值转化为int类型。");
                 errorPage.Show();
+                btnStart.IsEnabled = true;
+                RandomlyIcon.IsEnabled = true;
             }
+
+
 
         }
 
@@ -133,21 +194,82 @@ namespace Randomly
 
         private void btnSort_Click(object sender, RoutedEventArgs e)
         {
+            List<int> randomNumbersList = new List<int>(randomNumbers);
             if (isAscending)
             {
-                randomNumbers.Sort((a, b) => a.CompareTo(b)); // 从小到大排序
+                randomNumbersList.Sort((a, b) => a.CompareTo(b)); // 从小到大排序
                 btnSort.Content = "从大到小排序";
             }
             else
             {
-                randomNumbers.Sort((a, b) => b.CompareTo(a)); // 从大到小排序
+                randomNumbersList.Sort((a, b) => b.CompareTo(a)); // 从大到小排序
                 btnSort.Content = "从小到大排序";
             }
 
             isAscending = !isAscending;
-            
+            randomNumbers = new ObservableCollection<int>(randomNumbersList);
             lbRandomList.ItemsSource = null; //刷新显示
             lbRandomList.ItemsSource = randomNumbers;
+        }
+
+        private async void RandomlyIcon_Click(object sender, RoutedEventArgs e)
+        {
+            randomNumbers.Clear();
+            lbRandomList.ItemsSource = null;
+            lbRandomList.ItemsSource = randomNumbers;
+            btnStart.IsEnabled = false;
+            RandomlyIcon.IsEnabled = false;
+            if (int.TryParse(tbStartNum.Text, out int minValue) &&
+                int.TryParse(tbEndNum.Text, out int maxValue) &&
+                int.TryParse(tbNum.Text, out int quantity))
+            {
+                if (minValue < maxValue)
+                {
+                    if (quantity > maxValue - minValue + 1)
+                    {
+                        if ((bool)cbAntiRepeat.IsChecked)
+                        {
+
+                            ErrorPage errorPage = new ErrorPage("你开启了避免重复，但是你取的值太大啦 ＞﹏＜");
+                            errorPage.Show();
+                            btnStart.IsEnabled = true;
+                            RandomlyIcon.IsEnabled = true;
+                        }
+                        else
+                        {
+                            // 特殊情况: 取数数量超过可取数量，只允许重复
+                            await GenerateRandomNumbersAsync(minValue, maxValue, quantity, false);
+                        }
+                    }
+                    else
+                    {
+                        // 通常情况: 允许重复 + 不允许重复
+                        await GenerateRandomNumbersAsync(minValue, maxValue, quantity, (bool)cbAntiRepeat.IsChecked);
+                    }
+
+                }
+                else
+                {
+                    // 输入的值无效，显示错误
+                    ErrorPage errorPage = new ErrorPage("为什么最小值比最大值还大啊喂 (#`O′)");
+                    errorPage.Show();
+                    btnStart.IsEnabled = true;
+                    RandomlyIcon.IsEnabled = true;
+                }
+
+
+            }
+            else
+            {
+                // 输入的值无效，显示错误
+                ErrorPage errorPage = new ErrorPage("好像出了点问题。。。一定不是Randomly的问题，一定不是!\n 无法将输入值转化为int类型。");
+                errorPage.Show();
+                btnStart.IsEnabled = true;
+                RandomlyIcon.IsEnabled = true;
+            }
+
+
+
         }
 
     }
